@@ -68,17 +68,17 @@ local WORLD = { w=2400, h=2400 }
 
 local UI = {
   text=15, dim=12, faint=13,
-  ink=0, panel=1, panel2=2, border=12,
-  ok=11, warn=10, bad=8,
+  ink=0, panel=1, panel2=14, border=10,
+  ok=11, warn=6, bad=3,
 }
 
 -- planet palettes also influence cave "rock" tint slightly
 local PLANET_TYPES = {
-  {name="Arid",     pal={bg=3,  mid=4,  hi=6,  deco=9},  food=0.75, caves=1.10},
-  {name="Ice",      pal={bg=12, mid=13, hi=15, deco=6},  food=0.55, caves=1.00},
-  {name="Jungle",   pal={bg=2,  mid=3,  hi=11, deco=5},  food=1.35, caves=0.95},
-  {name="Volcanic", pal={bg=1,  mid=8,  hi=9,  deco=15}, food=0.45, caves=1.20},
-  {name="Ocean",    pal={bg=4,  mid=12, hi=6,  deco=15}, food=1.10, caves=0.90},
+  {name="Arid",     pal={bg=4,  mid=5,  hi=6,  deco=14}, food=0.75, caves=1.10},
+  {name="Ice",      pal={bg=12, mid=13, hi=15, deco=11}, food=0.55, caves=1.00},
+  {name="Jungle",   pal={bg=8,  mid=7,  hi=11, deco=15}, food=1.35, caves=0.95},
+  {name="Volcanic", pal={bg=2,  mid=3,  hi=4,  deco=6},  food=0.45, caves=1.20},
+  {name="Ocean",    pal={bg=9,  mid=10, hi=11, deco=15}, food=1.10, caves=0.90},
 }
 
 -- Expanded ore set (6 total: original ore->IRON + original CRYSTAL +4 new)
@@ -575,91 +575,94 @@ end
 -- Procedural sprites
 ----------------------------
 local function draw_ship(x,y,thrust)
-  circ(x, y+7, 5, 0)
-  tri(x, y-8, x-7, y+6, x+7, y+6, 15)
-  tri(x, y-6, x-5, y+5, x+5, y+5, 12)
-  circ(x, y-1, 3, 13)
-  circ(x-1, y-2, 1, 15)
-  tri(x-7,y+3, x-12,y+7, x-5,y+7, 12)
-  tri(x+7,y+3, x+12,y+7, x+5,y+7, 12)
+  local glow = (math.floor(G.t/4)%2)==0
+  rect(x-1,y+7,2,4,1)
+  tri(x, y-10, x-9, y+6, x+9, y+6, 12)
+  tri(x, y-8, x-7, y+5, x+7, y+5, 15)
+  rect(x-2,y-1,4,3,10)
+  pix(x-1,y,11); pix(x,y,11)
+  rect(x-10,y+2,3,4,13)
+  rect(x+7,y+2,3,4,13)
+  line(x-4,y+6,x-8,y+9,14)
+  line(x+4,y+6,x+8,y+9,14)
   if thrust then
-    local f=(G.t%6)
-    circ(x, y+7, 2+(math.floor(f/3)), 10)
-    circ(x, y+8, 1, 9)
+    tri(x-2,y+11, x+2,y+11, x,y+16, glow and 6 or 5)
+    tri(x-1,y+10, x+1,y+10, x,y+14, 15)
   end
 end
 
 local function draw_astronaut(x,y)
-  local bob = math.sin(G.t/6)*0.5
-  circ(x, y+7, 3, 0)
-  rect(x-3, y+1+bob, 6, 7, 15)
+  local bob = math.sin(G.t/10)*0.7
+  rect(x-3, y+1+bob, 6, 8, 12)
+  rect(x-2, y+2+bob, 4, 5, 14)
+  rect(x-4, y+9+bob, 3, 2, 13)
+  rect(x+1, y+9+bob, 3, 2, 13)
   circ(x, y-2+bob, 4, 15)
-  circ(x+1, y-2+bob, 2, 12)
-  pix(x+1, y-3+bob, 15)
-  rect(x-5, y+2+bob, 2, 6, 13)
-  rect(x-3, y+8+bob, 2, 2, 15)
-  rect(x+1, y+8+bob, 2, 2, 15)
+  rect(x-2,y-3+bob,4,2,10)
+  pix(x-1,y-3+bob,11); pix(x,y-3+bob,11)
+  rect(x-6,y+3+bob,2,4,13)
+  rect(x+4,y+3+bob,2,4,13)
 end
 
 local function draw_base(bx,by,pal)
-  rect(bx-10,by+8,20,4,0)
-  rect(bx-10,by-8,20,16,15)
-  rect(bx-9,by-7,18,14,UI.panel2)
-  rect(bx-2,by+2,4,6,pal.mid)
-  rect(bx-1,by+3,2,4,pal.hi)
-  rect(bx-7,by-4,4,3,pal.hi)
-  rect(bx+3,by-4,4,3,pal.hi)
-  line(bx+8,by-8,bx+8,by-16,12)
-  circ(bx+8,by-16,2,11)
+  rect(bx-13,by+8,26,3,1)
+  rect(bx-12,by-10,24,18,13)
+  rect(bx-10,by-8,20,14,14)
+  rect(bx-3,by+1,6,7,pal.mid)
+  rect(bx-2,by+2,4,5,pal.hi)
+  rect(bx-8,by-5,5,4,10)
+  rect(bx+3,by-5,5,4,10)
+  line(bx-12,by-10,bx+12,by-10,15)
+  line(bx+9,by-10,bx+13,by-15,12)
+  circ(bx+14,by-16,2,11)
 end
 
 local function draw_entrance(x,y,pal)
-  -- cave mouth (high contrast + beacon pulse so it's easy to spot)
-  local blink = ((math.floor(G.t/10))%2)==0
-  circ(x,y,10, blink and pal.hi or pal.mid)
-  circ(x,y,9,0)
-  circ(x,y,7,0)
-  circ(x,y,6,pal.mid)
-  circ(x,y,5,0)
-  -- ladder lines
-  line(x-2,y-2,x-2,y+5,15)
-  line(x+2,y-2,x+2,y+5,15)
-  line(x-2,y,x+2,y,15)
-  line(x-2,y+3,x+2,y+3,15)
-  -- tiny label when close enough
+  local pulse = (G.t%24)
+  rect(x-9,y-8,18,3,13)
+  rect(x-7,y-5,14,2,14)
+  rect(x-8,y-2,16,11,0)
+  rect(x-6,y,12,8,1)
+  line(x-3,y+1,x-3,y+7,12)
+  line(x+3,y+1,x+3,y+7,12)
+  line(x-3,y+3,x+3,y+3,12)
+  line(x-3,y+6,x+3,y+6,12)
+  rect(x-2,y-10,4,2,pulse<12 and pal.hi or 11)
   if dist(Player.px-G.planet_camx, Player.py-G.planet_camy, x, y) < 44 then
-    print("CAVE", x-10, y-18, 15)
+    print("MINE", x-10, y-16, 15)
   end
 end
 
 local function draw_relic(x,y)
-  rect(x-3,y-8,6,10,14)
-  rect(x-2,y-7,4,8,15)
-  circ(x,y-10,3,14)
-  pix(x-1,y-11,15)
+  tri(x,y-11,x-6,y+3,x+6,y+3,11)
+  tri(x,y-8,x-4,y+1,x+4,y+1,15)
+  rect(x-3,y+3,6,4,14)
 end
 
 local function draw_crate(x,y)
-  rect(x-5,y-4,10,8,4)
-  rectb(x-5,y-4,10,8,12)
-  line(x-5,y,x+4,y,12)
-  line(x,y-4,x,y+3,12)
+  rect(x-6,y-5,12,10,5)
+  rect(x-5,y-4,10,8,6)
+  rectb(x-6,y-5,12,10,14)
+  line(x-6,y,x+5,y,14)
+  line(x,y-5,x,y+4,14)
 end
 
 local function draw_plant(x,y,pal)
-  local sway=math.sin((G.t/30)+(x*0.03))*1
-  line(x,y,x+sway,y-6,pal.deco)
-  line(x+1,y,x+1+sway,y-5,pal.deco)
-  circ(x+sway,y-6,1,pal.hi)
-  pix(x+sway,y-5,pal.hi)
+  local sway=math.sin((G.t/20)+(x*0.05))*2
+  line(x,y,x+sway,y-8,pal.deco)
+  line(x+1,y,x+1+sway,y-7,pal.deco)
+  pix(x+sway,y-8,pal.hi)
+  pix(x+sway+1,y-7,pal.hi)
+  pix(x+sway-1,y-7,pal.hi)
 end
 
 local function draw_vent(x,y)
-  circ(x,y,4,0)
-  circ(x,y,3,8)
-  if (G.t%40)<20 then
-    line(x,y-6,x,y-12,12)
-    circ(x,y-12,2,12)
+  rect(x-4,y-2,8,6,2)
+  rect(x-3,y-1,6,4,3)
+  if (G.t%30)<15 then
+    line(x,y-4,x,y-9,12)
+    pix(x,y-10,15)
+    pix(x-1,y-9,13)
   end
 end
 
@@ -668,10 +671,16 @@ end
 ----------------------------
 local function draw_space_bg(camx,camy)
   cls(0)
+
+  for yy=0,H,4 do
+    local shade = 1 + math.floor((yy/H)*2)
+    rect(0,yy,W,4,shade)
+  end
+
   local layers={
-    {cell=34, dens=0.10, col=12, par=0.35},
-    {cell=22, dens=0.08, col=13, par=0.55},
-    {cell=14, dens=0.06, col=15, par=0.75},
+    {cell=28, dens=0.10, col=12, par=0.30},
+    {cell=18, dens=0.08, col=11, par=0.55},
+    {cell=12, dens=0.06, col=15, par=0.80},
   }
 
   for li=1,#layers do
@@ -687,29 +696,21 @@ local function draw_space_bg(camx,camy)
       for cx=cx0,cx1 do
         local r=ihash(cx,cy,1337+li*99)
         if r<L.dens then
-          local ox=ihash(cx,cy,777+li*17)
-          local oy=ihash(cx,cy,999+li*31)
-          local x = cx*L.cell + ox*(L.cell-1) - offx
-          local y = cy*L.cell + oy*(L.cell-1) - offy
-          local tw = 0.6 + 0.4*math.sin((G.t/40)+(cx*0.7+cy*0.3+li))
-          local col = (tw>0.78) and 15 or L.col
-          pix(x,y,col)
-          if li==3 and tw>0.86 then pix(x+1,y,col) end
+          local x = cx*L.cell + ihash(cx,cy,777+li*17)*(L.cell-1) - offx
+          local y = cy*L.cell + ihash(cx,cy,999+li*31)*(L.cell-1) - offy
+          pix(x,y,L.col)
+          if li==3 then pix(x+1,y,12) end
         end
       end
     end
   end
 
-  -- soft nebula blobs
-  local nseed=4242
-  for i=1,3 do
-    local bx = ihash(i,0,nseed)*WORLD.w
-    local by = ihash(0,i,nseed)*WORLD.h
-    local x = (bx - camx*0.35) % (W+120) - 60
-    local y = (by - camy*0.35) % (H+120) - 60
-    circ(x,y,34,1)
-    circ(x+10,y-8,22,2)
-    circ(x-8,y+6,18,3)
+  for i=1,4 do
+    local bx = (ihash(i,0,4242)*WORLD.w - camx*0.22) % (W+180) - 90
+    local by = (ihash(0,i,4242)*WORLD.h - camy*0.22) % (H+120) - 60
+    rect(bx-18,by-10,36,20,2)
+    rect(bx-12,by-6,24,12,3)
+    rect(bx-6,by-3,12,6,4)
   end
 end
 
@@ -720,28 +721,19 @@ local function draw_planet_in_space(p,camx,camy)
   local y=p.y-camy
   local r=p.r
 
-  circ(x,y,r+3,pal.mid)
-  circ(x,y,r+2,pal.bg)
-
+  circ(x,y,r+2,1)
   circ(x,y,r,pal.bg)
-  circ(x-2,y-2,math.max(2,math.floor(r*0.75)),pal.mid)
-  circ(x-4,y-4,math.max(2,math.floor(r*0.50)),pal.hi)
 
-  circ(x+3,y+2,math.max(2,math.floor(r*0.78)),0)
-  circ(x+1,y+1,math.max(2,math.floor(r*0.82)),pal.bg)
-
-  if (p.id%2)==0 then
-    local a=G.t/90
-    local rx = x + math.cos(a)*r*0.35
-    local ry = y + math.sin(a)*r*0.2
-    circ(rx,ry,2,pal.hi)
-  else
-    for i=-r, r, 3 do
-      local yy = y + (i*0.18)
-      local ww = math.floor(math.sqrt(r*r - i*i))
-      if ww>0 then line(x-ww,yy,x+ww,yy,pal.mid) end
-    end
+  for sy=-r,r,2 do
+    local ww=math.floor(math.sqrt(math.max(0,r*r-sy*sy)))
+    local n=ihash(math.floor(x+sy),p.id,p.seed)
+    local col=pal.mid
+    if n>0.62 then col=pal.hi elseif n<0.28 then col=pal.bg end
+    line(x-ww,y+sy,x+ww,y+sy,col)
   end
+
+  circ(x-r*0.25,y-r*0.2,math.max(2,math.floor(r*0.2)),15)
+  rect(x-r,y-r/2,r*2,2,12)
 
   if p.discovered then
     print(p.name, x-12, y-r-12, UI.text)
@@ -1252,7 +1244,7 @@ local function draw_planet()
 
   cls(pal.bg)
 
-  -- tile draw (procedural)
+  -- tile draw (remastered with clean contrast + sub-tiles)
   local tx0=math.floor(G.planet_camx/8)
   local ty0=math.floor(G.planet_camy/8)
   local tx1=tx0+math.ceil(W/8)+1
@@ -1261,57 +1253,51 @@ local function draw_planet()
   for ty=ty0,ty1 do
     for tx=tx0,tx1 do
       local c=surface_col(p,tx,ty)
-      rect(tx*8-G.planet_camx, ty*8-G.planet_camy, 8, 8, c)
+      local sx = tx*8-G.planet_camx
+      local sy = ty*8-G.planet_camy
+      rect(sx, sy, 8, 8, c)
 
-      -- procedural micro-decor (stable)
-      local r = ihash(tx,ty,p.seed)
-      if r>0.993 then
-        local x = tx*8 - G.planet_camx + math.floor(ihash(tx,ty,p.seed*7+13)*6)+1
-        local y = ty*8 - G.planet_camy + math.floor(ihash(tx,ty,p.seed*19+101)*6)+1
-        circ(x,y,2,pal.deco)
-        pix(x-1,y-1,pal.hi)
-      elseif r<0.008 and p.typ==3 then
-        -- jungle vines
-        local x = tx*8 - G.planet_camx + 4
-        local y = ty*8 - G.planet_camy + 4
-        line(x,y,x,y-5,pal.deco)
+      local shade = ihash(tx,ty,p.seed)
+      if shade>0.72 then
+        rect(sx,sy,8,2,pal.hi)
+      elseif shade<0.22 then
+        rect(sx,sy+6,8,2,pal.mid)
+      end
+
+      local grain = ihash(tx*3,ty*5,p.seed*11)
+      if grain>0.85 then
+        pix(sx+2,sy+2,pal.deco)
+        pix(sx+5,sy+4,pal.deco)
+      elseif grain<0.08 then
+        line(sx+1,sy+6,sx+6,sy+1,pal.mid)
       end
     end
   end
 
-  -- cave entrances
   if p.caves then
     for i=1,#p.caves do
       local e=p.caves[i]
       local x=e.ex-G.planet_camx
       local y=e.ey-G.planet_camy
-      if x>-20 and x<W+20 and y>-20 and y<H+20 then
-        draw_entrance(x,y,pal)
-      end
+      if x>-20 and x<W+20 and y>-20 and y<H+20 then draw_entrance(x,y,pal) end
     end
   end
 
-  -- interactables
   for i=1,#p.nodes do
     local n=p.nodes[i]
     if n.alive then
       local x=n.x-G.planet_camx
       local y=n.y-G.planet_camy
       if x>-24 and x<W+24 and y>-24 and y<H+24 then
-        if n.kind=="food" then
-          draw_plant(x,y,pal)
-        elseif n.kind=="relic" then
-          draw_relic(x,y)
-        elseif n.kind=="crate" then
-          draw_crate(x,y)
-        elseif n.kind=="haz" then
-          draw_vent(x,y)
+        if n.kind=="food" then draw_plant(x,y,pal)
+        elseif n.kind=="relic" then draw_relic(x,y)
+        elseif n.kind=="crate" then draw_crate(x,y)
+        elseif n.kind=="haz" then draw_vent(x,y)
         end
       end
     end
   end
 
-  -- base
   if p.base then
     local bx=p.base.x-G.planet_camx
     local by=p.base.y-G.planet_camy
@@ -1324,7 +1310,6 @@ local function draw_planet()
   draw_hud(true)
   draw_planet_minimap(p)
 
-  -- always guide the player to the nearest cave entrance (big planets need navigation)
   if p.caves then
     local best=nil; local bd=1e9
     for i=1,#p.caves do
@@ -1337,14 +1322,11 @@ local function draw_planet()
       if (G.scan_t and G.scan_t>0 and G.scan_mode=="planet") and bd < scan_range_surface() then
         local sx=best.ex-G.planet_camx
         local sy=best.ey-G.planet_camy
-        if sx>-24 and sx<W+24 and sy>-24 and sy<H+24 then
-          circ(sx,sy, 12 + (G.t%8), UI.ok)
-        end
+        if sx>-24 and sx<W+24 and sy>-24 and sy<H+24 then rect(sx-10,sy-10,20,20,11) end
       end
     end
   end
 
-  -- scanner overlay: highlight discovered POIs in range
   if (G.scan_t and G.scan_t>0 and G.scan_mode=="planet") then
     local r=scan_range_surface()
     for i=1,#p.nodes do
@@ -1354,18 +1336,13 @@ local function draw_planet()
         local sy=n.y-G.planet_camy
         if sx>-28 and sx<W+28 and sy>-28 and sy<H+28 then
           local col=15
-          if n.kind=="relic" then col=14
-          elseif n.kind=="crate" then col=4
-          elseif n.kind=="haz" then col=8
-          elseif n.kind=="food" then col=11 end
-          circ(sx,sy, 9 + (G.t%6), col)
+          if n.kind=="relic" then col=10 elseif n.kind=="crate" then col=6 elseif n.kind=="haz" then col=3 elseif n.kind=="food" then col=8 end
+          rect(sx-5,sy-5,10,10,col)
         end
       end
     end
   end
 
-
-  -- contextual hint
   local near=node_near(p,Player.px,Player.py,14)
   local ent=cave_entrance_near(p,Player.px,Player.py,16)
   local atBase = p.base and dist(Player.px,Player.py,p.base.x,p.base.y) < 14
@@ -1383,6 +1360,7 @@ local function draw_planet()
     hint("Find a cave to mine ores. Tap C: Scan  Hold C: Base")
   end
 end
+
 
 ----------------------------
 -- Caves: procedural solids + ore veins + persistent mining
@@ -1645,15 +1623,13 @@ local function draw_cave()
   if not (p and c) then cls(0); return end
   if not c.spawn then cave_find_valid_spawn(p,c) end
 
-  cls(0)
+  cls(1)
 
-  -- cave rock tint influenced by planet palette
-  local pal=PLANET_TYPES[p.typ].pal
-  local wallBright = (p.typ==2) and 13 or 5
-  local wallMid    = (p.typ==2) and 12 or 1
+  local wallBright = 14
+  local wallMid    = 13
   local wallDark   = 0
-  local floorBright= (p.typ==4) and 0 or 1
-  local floorMid   = 0
+  local floorBright= 2
+  local floorMid   = 1
 
   local cx0=math.floor(G.cave_camx/8)
   local cy0=math.floor(G.cave_camy/8)
@@ -1671,76 +1647,58 @@ local function draw_cave()
       local py=cy*8-G.cave_camy
 
       local d = dist(pcx,pcy,cx+0.5,cy+0.5)
-      local band
-      if d<3.2 then band=3
-      elseif d<5.0 then band=2
-      elseif d<rad then band=1
-      else band=0 end
+      local band = (d<3.2 and 3) or (d<5.0 and 2) or (d<rad and 1) or 0
 
-      -- scanner reveals ore veins beyond headlamp for a moment
-      if (G.scan_t and G.scan_t>0 and G.scan_mode=="cave") then
-        if v<0 and d < (rad + scan_range_cave()) then
-          if band<1 then band=1 end
-        end
+      if (G.scan_t and G.scan_t>0 and G.scan_mode=="cave") and v<0 and d < (rad + scan_range_cave()) then
+        if band<1 then band=1 end
       end
 
       if v==0 then
         local col = (band>=2) and floorBright or floorMid
         rect(px,py,8,8,col)
-        -- floor speckle
-        if band>0 and ihash(cx,cy,c.seed)>0.92 then pix(px+2,py+5,wallMid) end
+        if band>0 then
+          line(px,py+7,px+7,py+7,0)
+          if ihash(cx,cy,c.seed)>0.6 then pix(px+2,py+3,14) end
+        end
       else
-        -- wall base
         local col = (band>=3) and wallBright or ((band>=1) and wallMid or wallDark)
         rect(px,py,8,8,col)
-        -- outline / chunk
         if band>0 then
-          line(px,py,px+7,py,wallDark)
-          line(px,py,px,py+7,wallDark)
+          line(px,py,px+7,py,0)
+          line(px,py,px,py+7,0)
+          rect(px+1,py+1,2,2,wallBright)
         end
 
-        -- ore flecks embedded in wall
         local oreIndex = (v<0) and (-v) or cave_ore_index_base(c,cx,cy,p.typ)
         if band>0 and oreIndex>0 then
           local ok=ORE_KEYS[oreIndex]
           local oc=ORE[ok].col
-          for i=0,3 do
-            local rx = px + math.floor(ihash(cx+i,cy-i,c.seed*3+11)*7)
-            local ry = py + math.floor(ihash(cx-i,cy+i,c.seed*5+29)*7)
-            pix(rx,ry,oc)
-          end
-          -- subtle glow for crystals
-          if ok=="crystal" and band>=2 then
-            pix(px+4,py+4,15)
-          end
+          rect(px+3,py+3,2,2,oc)
+          pix(px+1,py+5,oc)
+          pix(px+6,py+2,oc)
+          if ok=="crystal" and band>=2 then pix(px+4,py+1,15) end
         end
 
-        -- mining cracks if currently being mined
         local k=ckey(c,cx,cy)
         if band>0 and c.hp[k] then
           line(px+1,py+6,px+6,py+2,15)
-          line(px+2,py+7,px+7,py+3,wallDark)
+          line(px+1,py+2,px+4,py+5,15)
         end
       end
 
-      -- heavy darkness outside light radius
-      if band==0 then
-        rect(px,py,8,8,0)
-      end
+      if band==0 then rect(px,py,8,8,0) end
     end
   end
 
-  -- exit marker at spawn/ladder
   local ex = (c.exit and c.exit.x*8+4) or c.spawn.x
   local ey = (c.exit and c.exit.y*8+4) or c.spawn.y
   local lx=ex-G.cave_camx
   local ly=ey-G.cave_camy
   if lx>-10 and lx<W+10 and ly>-10 and ly<H+10 then
-    rect(lx-3,ly-6,6,12,12)
-    line(lx-2,ly-5,lx-2,ly+5,15)
-    line(lx+2,ly-5,lx+2,ly+5,15)
-    line(lx-2,ly-2,lx+2,ly-2,15)
-    line(lx-2,ly+1,lx+2,ly+1,15)
+    rect(lx-5,ly-7,10,14,12)
+    rect(lx-3,ly-5,6,10,15)
+    line(lx-2,ly-4,lx-2,ly+4,1)
+    line(lx+2,ly-4,lx+2,ly+4,1)
   end
 
   draw_particles(G.cave_camx,G.cave_camy)
@@ -1748,14 +1706,11 @@ local function draw_cave()
   draw_hud(true)
   draw_cave_minimap(p,c)
 
-  -- contextual hint
   local dExit = dist(Player.px,Player.py,ex,ey)
-  if dExit<14 then
-    hint("X: Exit Cave   Hold Z: Mine   Tap C: Scan")
-  else
-    hint("Hold Z: Mine ore veins in walls  |  Tap C: Scan  |  Exit (X)")
-  end
+  if dExit<14 then hint("X: Exit Cave   Hold Z: Mine   Tap C: Scan")
+  else hint("Hold Z: Mine ore veins in walls  |  Tap C: Scan  |  Exit (X)") end
 end
+
 
 ----------------------------
 -- Base menu state (slightly expanded inventory view)
